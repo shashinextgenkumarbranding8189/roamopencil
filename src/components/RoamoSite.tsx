@@ -1,10 +1,16 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import logo from "@/assets/roamo-logo.png.asset.json";
 import blaxo from "@/assets/blaxo.jpg";
 import bluzo from "@/assets/bluzo.jpg";
+import imgRoamo from "@/assets/ROAMO.webp";
+import imgImperium from "@/assets/Imperium.webp";
+import imgColour from "@/assets/Colour & Form.webp";
+import imgPartner from "@/assets/Partner Network.webp";
+
+// Logo served from public folder (works in both local dev and production)
+const LOGO_URL = "/roamo-logo.png";
 
 const WA_NUMBER = "918174907302";
 const wa = (msg: string) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
@@ -13,11 +19,674 @@ const productMsg = (p: string) => `Hello ROAMO, I am interested in ${p}.`;
 
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+// ── Gold particle canvas ──────────────────────────────────────────────────────
+function GoldParticles() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf: number;
+    const particles: { x: number; y: number; r: number; vx: number; vy: number; a: number; va: number }[] = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+
+    const COUNT = Math.min(60, Math.floor((canvas.width * canvas.height) / 18000));
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: -(Math.random() * 0.22 + 0.06),
+        a: Math.random(),
+        va: (Math.random() - 0.5) * 0.004,
+      });
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.a += p.va;
+        if (p.a < 0) p.a = 0, p.va *= -1;
+        if (p.a > 1) p.a = 1, p.va *= -1;
+        if (p.y < -4) { p.y = canvas.height + 4; p.x = Math.random() * canvas.width; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(216,177,90,${p.a * 0.55})`;
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, [reduce]);
+
+  return <canvas ref={canvasRef} className="hero-particles" aria-hidden />;
+}
+
+// ── Floating stationery shapes (SVG-based, pure CSS animated) ─────────────────
+function FloatingStationery() {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+
+  // Pencil SVG inline — antique gold tones, premium minimal
+  const Pencil = ({ style, cls }: { style?: React.CSSProperties; cls?: string }) => (
+    <svg viewBox="0 0 28 180" fill="none" xmlns="http://www.w3.org/2000/svg" className={`float-pencil ${cls ?? ""}`} style={style} aria-hidden>
+      {/* Eraser tip */}
+      <rect x="6" y="0" width="16" height="14" rx="3" fill="#d8b15a" opacity="0.85"/>
+      <rect x="6" y="10" width="16" height="4" fill="#b8924a" opacity="0.7"/>
+      {/* Body */}
+      <rect x="7" y="14" width="14" height="128" fill="#c9a84c" opacity="0.72"/>
+      {/* Label band */}
+      <rect x="7" y="62" width="14" height="28" fill="#111" opacity="0.38"/>
+      <rect x="7" y="64" width="14" height="2" fill="#d8b15a" opacity="0.6"/>
+      <rect x="7" y="86" width="14" height="2" fill="#d8b15a" opacity="0.6"/>
+      {/* Wood */}
+      <rect x="7" y="142" width="14" height="18" fill="#c9a050" opacity="0.55"/>
+      {/* Graphite tip */}
+      <polygon points="7,160 21,160 14,180" fill="#c9a84c" opacity="0.65"/>
+      <polygon points="10,165 18,165 14,180" fill="#555" opacity="0.6"/>
+    </svg>
+  );
+
+  // Eraser SVG
+  const Eraser = ({ style, cls }: { style?: React.CSSProperties; cls?: string }) => (
+    <svg viewBox="0 0 72 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={`float-eraser ${cls ?? ""}`} style={style} aria-hidden>
+      <rect x="0" y="0" width="72" height="32" rx="5" fill="#c9a84c" opacity="0.6"/>
+      <rect x="0" y="22" width="72" height="10" rx="3" fill="#b8924a" opacity="0.5"/>
+      <rect x="8" y="8" width="42" height="10" rx="2" fill="#111" opacity="0.28"/>
+      <rect x="8" y="10" width="42" height="2" fill="#d8b15a" opacity="0.5"/>
+    </svg>
+  );
+
+  // Ruler SVG
+  const Ruler = ({ style, cls }: { style?: React.CSSProperties; cls?: string }) => (
+    <svg viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`float-ruler ${cls ?? ""}`} style={style} aria-hidden>
+      <rect x="0" y="0" width="200" height="24" rx="3" fill="#c9a84c" opacity="0.5"/>
+      {[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190].map((x,i)=>(
+        <rect key={x} x={x+4} y={0} width="1" height={i%5===0?14:8} fill="#7a5e2a" opacity="0.7"/>
+      ))}
+      <rect x="0" y="20" width="200" height="4" rx="2" fill="#b8924a" opacity="0.4"/>
+    </svg>
+  );
+
+  return (
+    <div className="float-layer" aria-hidden>
+      <Pencil cls="fp1" />
+      <Pencil cls="fp2" />
+      <Pencil cls="fp3" />
+      <Eraser cls="fe1" />
+      <Eraser cls="fe2" />
+      <Ruler cls="fr1" />
+      <Pencil cls="fp4" />
+    </div>
+  );
+}
+
+// ── Hero Product Slider ───────────────────────────────────────────────────────
+const SLIDES = [
+  {
+    img: blaxo,
+    name: "BLAXO",
+    tag: "Black Series",
+    desc: "Bold, premium pencil range with a distinctive black-and-gold visual identity.",
+    href: "https://roamopencils.com/#roamo",
+  },
+  {
+    img: bluzo,
+    name: "BLUZO",
+    tag: "Blue Series",
+    desc: "Fresh blue-accented pencil range designed to stand apart on the stationery shelf.",
+    href: "https://roamopencils.com/#roamo",
+  },
+  {
+    img: blaxo,
+    name: "Imperium",
+    tag: "Wood-Free Range",
+    desc: "Rethink the everyday pencil with our innovative wood-free Imperium range.",
+    href: "https://roamopencils.com/#roamo",
+  },
+];
+
+function HeroSlider() {
+  const [current, setCurrent] = useState(0);
+  const [dir, setDir] = useState(1);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reduce = useReducedMotion();
+
+  const goTo = useCallback((idx: number, d = 1) => {
+    setDir(d);
+    setCurrent(idx);
+  }, []);
+
+  const next = useCallback(() => goTo((current + 1) % SLIDES.length, 1), [current, goTo]);
+  const prev = useCallback(() => goTo((current - 1 + SLIDES.length) % SLIDES.length, -1), [current, goTo]);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(c => (c + 1) % SLIDES.length);
+      setDir(1);
+    }, 4200);
+  }, []);
+
+  useEffect(() => {
+    if (reduce) return;
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [reduce, startTimer]);
+
+  const pauseTimer = () => { if (timerRef.current) clearInterval(timerRef.current); };
+
+  const variants = reduce
+    ? { enter: { opacity: 0 }, center: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        enter: (d: number) => ({ x: d > 0 ? 60 : -60, opacity: 0, scale: 0.95 }),
+        center: { x: 0, opacity: 1, scale: 1 },
+        exit: (d: number) => ({ x: d > 0 ? -60 : 60, opacity: 0, scale: 0.95 }),
+      };
+
+  const slide = SLIDES[current]!;
+
+  return (
+    <div className="hero-slider" onMouseEnter={pauseTimer} onMouseLeave={startTimer}>
+      {/* Ambient glow behind slider */}
+      <div className="slider-glow" aria-hidden />
+
+      <div className="slider-frame">
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.div
+            key={current}
+            custom={dir}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: reduce ? 0.2 : 0.65, ease: [0.22, 1, 0.36, 1] }}
+            className="slider-slide"
+          >
+            <div className="slider-img-wrap">
+              <img src={slide.img} alt={`ROAMO ${slide.name} pencil packaging`} width={900} height={900} />
+            </div>
+            <div className="slider-info">
+              <span className="slider-tag">{slide.tag}</span>
+              <strong className="slider-name">{slide.name}</strong>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Controls */}
+      <div className="slider-controls">
+        <button className="slider-btn" onClick={prev} aria-label="Previous product">
+          <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M13 4l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <div className="slider-dots">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              className={`slider-dot${i === current ? " active" : ""}`}
+              onClick={() => goTo(i, i > current ? 1 : -1)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+        <button className="slider-btn" onClick={next} aria-label="Next product">
+          <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── 3D Stacked Carousel ──────────────────────────────────────────────────────
+const CAROUSEL_ITEMS = [
+  {
+    title: "ROAMO",
+    label: "Distinctive Pencil Collections",
+    desc: "Iconic pencil ranges built around bold packaging and a clear product identity — crafted for students, creators and retailers.",
+    img: imgRoamo,
+    enquiry: wa(productMsg("ROAMO pencils")),
+    kicker: "01 / Signature Range",
+  },
+  {
+    title: "Imperium",
+    label: "Wood-Free Pencil Range",
+    desc: "Rethink the everyday pencil. The Imperium range delivers consistent performance with a modern, wood-free design.",
+    img: imgImperium,
+    enquiry: wa(productMsg("Imperium Wood-Free pencils")),
+    kicker: "02 / Imperium",
+  },
+  {
+    title: "Colour & form",
+    label: "Erasers & Stationery Essentials",
+    desc: "Colourful erasers and stationery essentials — designed to make your shelf stand out with personality and practicality.",
+    img: imgColour,
+    enquiry: wa("Hello ROAMO, I am interested in your erasers and stationery products."),
+    kicker: "03 / More Stationery",
+  },
+  {
+    title: "Partner network",
+    label: "Retail, Distribution & Bulk Supply",
+    desc: "Are you a retailer, distributor, school or bulk buyer? Partner with ROAMO and grow the stationery market together.",
+    img: imgPartner,
+    enquiry: wa(DEFAULT_MSG),
+    kicker: "04 / Trade & Distribution",
+  },
+];
+
+const TOTAL = CAROUSEL_ITEMS.length;
+
+function mod(n: number, m: number) { return ((n % m) + m) % m; }
+
+function StackedCarousel() {
+  const [active, setActive] = useState(0);
+  const [dir, setDir] = useState(0); // -1 prev, 1 next
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reduce = useReducedMotion();
+  const touchStartX = useRef<number | null>(null);
+
+  const goTo = useCallback((idx: number, d: number) => {
+    setDir(d);
+    setActive(idx);
+    if (!reduce) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => {
+        setActive(a => mod(a + 1, TOTAL));
+        setDir(1);
+      }, 4500);
+    }
+  }, [reduce]);
+
+  const next = useCallback(() => goTo(mod(active + 1, TOTAL), 1), [active, goTo]);
+  const prev = useCallback(() => goTo(mod(active - 1, TOTAL), -1), [active, goTo]);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setActive(a => mod(a + 1, TOTAL));
+      setDir(1);
+    }, 4500);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (reduce) return;
+    startTimer();
+    return () => stopTimer();
+  }, [reduce, startTimer, stopTimer]);
+
+  // Touch support
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
+    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+    touchStartX.current = null;
+  };
+
+  // Each card gets a position index relative to active: 0=front, ±1=side, ±2=back
+  const getPos = (i: number) => {
+    const d = mod(i - active, TOTAL);
+    if (d === 0) return 0;
+    if (d === 1) return 1;
+    if (d === TOTAL - 1) return -1;
+    if (d === 2) return 2;
+    return -2;
+  };
+
+  const cardStyle = (pos: number): React.CSSProperties => {
+    if (pos === 0) return {
+      zIndex: 10, transform: "translateX(0) scale(1) rotateY(0deg)",
+      opacity: 1, filter: "brightness(1)",
+    };
+    if (pos === 1) return {
+      zIndex: 7, transform: "translateX(56%) scale(0.88) rotateY(-8deg)",
+      opacity: 0.7, filter: "brightness(0.55)",
+    };
+    if (pos === -1) return {
+      zIndex: 7, transform: "translateX(-56%) scale(0.88) rotateY(8deg)",
+      opacity: 0.7, filter: "brightness(0.55)",
+    };
+    if (pos === 2) return {
+      zIndex: 4, transform: "translateX(92%) scale(0.76) rotateY(-14deg)",
+      opacity: 0.35, filter: "brightness(0.3)",
+    };
+    return {
+      zIndex: 4, transform: "translateX(-92%) scale(0.76) rotateY(14deg)",
+      opacity: 0.35, filter: "brightness(0.3)",
+    };
+  };
+
+  return (
+    <section className="carousel-section">
+      <div className="carousel-head">
+        <div className="section-kicker">Our Collections</div>
+        <h2>Explore the ROAMO range.</h2>
+      </div>
+
+      <div
+        className="carousel-stage"
+        onMouseEnter={stopTimer}
+        onMouseLeave={startTimer}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className="carousel-track">
+          {CAROUSEL_ITEMS.map((item, i) => {
+            const pos = getPos(i);
+            const style = cardStyle(pos);
+            const isActive = pos === 0;
+            return (
+              <div
+                key={item.title}
+                className={`c-card${isActive ? " c-card--active" : ""}`}
+                style={style}
+                onClick={() => !isActive && goTo(i, pos > 0 ? 1 : -1)}
+                aria-hidden={!isActive}
+              >
+                <div className="c-card-img">
+                  <img src={item.img} alt={item.title} loading="lazy" />
+                  <div className="c-card-img-fade" aria-hidden />
+                </div>
+                <div className="c-card-body">
+                  <span className="c-card-kicker">{item.kicker}</span>
+                  <h3 className="c-card-title">{item.title}</h3>
+                  <p className="c-card-label">{item.label}</p>
+                  <p className="c-card-desc">{item.desc}</p>
+                  <a
+                    className="c-card-cta"
+                    href={item.enquiry}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    Enquire now <span>→</span>
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Nav arrows */}
+        <button className="carousel-btn carousel-btn--prev" onClick={prev} aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <button className="carousel-btn carousel-btn--next" onClick={next} aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="carousel-dots">
+        {CAROUSEL_ITEMS.map((item, i) => (
+          <button
+            key={i}
+            className={`carousel-dot${i === active ? " active" : ""}`}
+            onClick={() => goTo(i, i > active ? 1 : -1)}
+            aria-label={`Go to ${item.title}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Enquiry Form ─────────────────────────────────────────────────────────────
+const ENQUIRY_TYPES = [
+  "General Enquiry",
+  "ROAMO Pencils",
+  "Imperium Pencils",
+  "Colour & Form / Erasers",
+  "Retail / Distribution",
+  "Bulk Order",
+  "Other",
+];
+
+function EnquiryForm() {
+  const [fields, setFields] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    enquiryType: "",
+    message: "",
+  });
+  type FormErrors = { name?: string; phone?: string; email?: string; enquiryType?: string; message?: string };
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const set = (k: keyof typeof fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setFields(f => ({ ...f, [k]: e.target.value }));
+
+  const validate = (): FormErrors => {
+    const e: FormErrors = {};
+    if (!fields.name.trim()) e.name = "Name is required.";
+    if (!fields.phone.trim()) e.phone = "Phone number is required.";
+    else if (!/^\+?[\d\s\-().]{7,20}$/.test(fields.phone.trim())) e.phone = "Enter a valid phone number.";
+    if (fields.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) e.email = "Enter a valid email address.";
+    if (!fields.enquiryType) e.enquiryType = "Please select an enquiry type.";
+    if (!fields.message.trim()) e.message = "Message is required.";
+    return e;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    const lines = [
+      `Hello ROAMO,`,
+      ``,
+      `*Name:* ${fields.name.trim()}`,
+      `*Phone:* ${fields.phone.trim()}`,
+      fields.email.trim() ? `*Email:* ${fields.email.trim()}` : null,
+      `*Enquiry Type:* ${fields.enquiryType}`,
+      ``,
+      `*Message:*`,
+      fields.message.trim(),
+    ].filter(l => l !== null).join("\n");
+
+    window.open(wa(lines), "_blank", "noopener,noreferrer");
+    setSubmitted(true);
+  };
+
+  const reset = () => { setFields({ name: "", phone: "", email: "", enquiryType: "", message: "" }); setErrors({}); setSubmitted(false); };
+
+  return (
+    <section className="enquiry-section" id="enquiry">
+      <div className="wrap enquiry-wrap">
+        {/* Left: heading block */}
+        <div className="enquiry-intro">
+          <div className="section-kicker">Get in touch</div>
+          <h2 className="enquiry-heading">
+            Tell us what<br />
+            <span className="goldtext">you need.</span>
+          </h2>
+          <div className="enquiry-rule" aria-hidden />
+          <p className="enquiry-sub">
+            Fill in the form and your enquiry will be sent directly to our team on WhatsApp. No logins, no waiting — just a conversation.
+          </p>
+          <div className="enquiry-trust">
+            <div className="eq-trust-item">
+              <span className="eq-trust-icon">✦</span>
+              <span>Replies within one business day</span>
+            </div>
+            <div className="eq-trust-item">
+              <span className="eq-trust-icon">✦</span>
+              <span>Retail &amp; bulk enquiries welcome</span>
+            </div>
+            <div className="eq-trust-item">
+              <span className="eq-trust-icon">✦</span>
+              <span>No account needed</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: form card */}
+        <div className="enquiry-card">
+          {submitted ? (
+            <div className="enquiry-success">
+              <div className="eq-success-icon" aria-hidden>
+                <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+                  <circle cx="24" cy="24" r="22" stroke="#d8b15a" strokeWidth="1.5"/>
+                  <path d="M14 24l7 7 13-13" stroke="#d8b15a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>WhatsApp opened!</h3>
+              <p>Your message has been pre-filled. Just hit send in WhatsApp and we'll get back to you shortly.</p>
+              <button className="btn gold enquiry-reset-btn" onClick={reset}>Send another enquiry</button>
+            </div>
+          ) : (
+            <form className="enquiry-form" onSubmit={handleSubmit} noValidate>
+              <div className="eq-row eq-row--2">
+                {/* Name */}
+                <div className={`eq-field${errors.name ? " eq-field--error" : ""}`}>
+                  <label htmlFor="eq-name" className="eq-label">
+                    Full Name <span className="eq-required" aria-hidden>*</span>
+                  </label>
+                  <input
+                    id="eq-name"
+                    type="text"
+                    className="eq-input"
+                    placeholder="e.g. Arjun Sharma"
+                    value={fields.name}
+                    onChange={set("name")}
+                    autoComplete="name"
+                    maxLength={80}
+                  />
+                  {errors.name && <span className="eq-error" role="alert">{errors.name}</span>}
+                </div>
+                {/* Phone */}
+                <div className={`eq-field${errors.phone ? " eq-field--error" : ""}`}>
+                  <label htmlFor="eq-phone" className="eq-label">
+                    Phone Number <span className="eq-required" aria-hidden>*</span>
+                  </label>
+                  <input
+                    id="eq-phone"
+                    type="tel"
+                    className="eq-input"
+                    placeholder="e.g. +91 98765 43210"
+                    value={fields.phone}
+                    onChange={set("phone")}
+                    autoComplete="tel"
+                    maxLength={20}
+                  />
+                  {errors.phone && <span className="eq-error" role="alert">{errors.phone}</span>}
+                </div>
+              </div>
+
+              <div className="eq-row eq-row--2">
+                {/* Email */}
+                <div className={`eq-field${errors.email ? " eq-field--error" : ""}`}>
+                  <label htmlFor="eq-email" className="eq-label">
+                    Email <span className="eq-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="eq-email"
+                    type="email"
+                    className="eq-input"
+                    placeholder="e.g. arjun@example.com"
+                    value={fields.email}
+                    onChange={set("email")}
+                    autoComplete="email"
+                    maxLength={120}
+                  />
+                  {errors.email && <span className="eq-error" role="alert">{errors.email}</span>}
+                </div>
+                {/* Enquiry type */}
+                <div className={`eq-field${errors.enquiryType ? " eq-field--error" : ""}`}>
+                  <label htmlFor="eq-type" className="eq-label">
+                    Enquiry Type <span className="eq-required" aria-hidden>*</span>
+                  </label>
+                  <div className="eq-select-wrap">
+                    <select
+                      id="eq-type"
+                      className="eq-input eq-select"
+                      value={fields.enquiryType}
+                      onChange={set("enquiryType")}
+                    >
+                      <option value="" disabled>Select a category…</option>
+                      {ENQUIRY_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <svg className="eq-select-chevron" viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden>
+                      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  {errors.enquiryType && <span className="eq-error" role="alert">{errors.enquiryType}</span>}
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className={`eq-field${errors.message ? " eq-field--error" : ""}`}>
+                <label htmlFor="eq-message" className="eq-label">
+                  Message <span className="eq-required" aria-hidden>*</span>
+                </label>
+                <textarea
+                  id="eq-message"
+                  className="eq-input eq-textarea"
+                  placeholder="Tell us about your requirements — products, quantities, timeline…"
+                  value={fields.message}
+                  onChange={set("message")}
+                  rows={5}
+                  maxLength={1200}
+                />
+                {errors.message && <span className="eq-error" role="alert">{errors.message}</span>}
+                <span className="eq-char-count">{fields.message.length} / 1200</span>
+              </div>
+
+              <button type="submit" className="eq-submit">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden>
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Send Enquiry via WhatsApp
+                <span className="eq-submit-arrow">↗</span>
+              </button>
+
+              <p className="eq-disclaimer">
+                Clicking send will open WhatsApp with your message pre-filled. No data is stored on our servers.
+              </p>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const NAV = [
   { href: "#roamo", label: "ROAMO Pencils" },
-  { href: "#imperium", label: "Imperium Pencils" },
-  { href: "#erasers", label: "Erasers" },
-  { href: "#partner", label: "Business Partner" },
+  { href: "#imperium", label: "Imperium" },
+  { href: "#about", label: "About" },
+  { href: "#partner", label: "Partner" },
 ];
 
 const tap = { whileTap: { scale: 0.97 } };
@@ -40,7 +709,7 @@ function Header() {
     <nav className={`nav${scrolled ? " scrolled" : ""}`}>
       <div className="wrap navin">
         <a className="brand" href="#home" aria-label="ROAMO home">
-          <img src={logo.url} alt="ROAMO" width={166} height={58} />
+          <img src={LOGO_URL} alt="ROAMO" width={166} height={58} />
         </a>
         <div className="links">
           {NAV.map((n) => (
@@ -117,20 +786,44 @@ export function RoamoSite() {
             .from(".hero-copy > p", { opacity: 0, y: 18, duration: 0.8 }, "-=0.6")
             .from(".hero-actions > .cta", { opacity: 0, y: 16, duration: 0.6, stagger: 0.12 }, "-=0.5")
             .from(".proof span", { opacity: 0, duration: 0.6, stagger: 0.1 }, "-=0.3")
-            .from(".hero-art", { clipPath: "inset(12% 12% 12% 12% round 28px)", opacity: 0, duration: 1.3, ease: "expo.out" }, 0.25)
-            .from("#heroProduct", { scale: 1.15, duration: 1.6, ease: "expo.out" }, 0.3)
-            .from(".hero-art .ring", { scale: 0.6, opacity: 0, duration: 1.4, stagger: 0.15 }, 0.5)
-            .from(".art-tag", { opacity: 0, y: 14, duration: 0.7 }, "-=0.8")
+            .from(".hero-slider", { opacity: 0, x: 40, duration: 1.1, ease: "expo.out" }, 0.3)
             .from(".scroll-cue", { opacity: 0, duration: 0.8 }, "-=0.4");
 
           if (desktop) {
+            // Subtle parallax on slider
             gsap.to(".hero-art-inner", {
-              yPercent: -8,
+              yPercent: -6,
               ease: "none",
               scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
             });
+            // Breathing glow
             gsap.to(".hero-glow", {
-              x: 40, y: 30, scale: 1.1, duration: 8, repeat: -1, yoyo: true, ease: "sine.inOut",
+              x: 40, y: 30, scale: 1.15, duration: 9, repeat: -1, yoyo: true, ease: "sine.inOut",
+            });
+            gsap.to(".hero-glow2", {
+              x: -30, y: 20, scale: 1.1, duration: 11, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2,
+            });
+            // Floating pencils — continuous drift
+            gsap.utils.toArray<HTMLElement>(".float-pencil").forEach((el, i) => {
+              gsap.to(el, {
+                y: `random(-22, 22)`, x: `random(-10, 10)`, rotation: `random(-8, 8)`,
+                duration: `random(5, 9)`, repeat: -1, yoyo: true, ease: "sine.inOut",
+                delay: i * 0.7,
+              });
+            });
+            gsap.utils.toArray<HTMLElement>(".float-eraser").forEach((el, i) => {
+              gsap.to(el, {
+                y: `random(-16, 16)`, x: `random(-8, 8)`, rotation: `random(-6, 6)`,
+                duration: `random(4, 7)`, repeat: -1, yoyo: true, ease: "sine.inOut",
+                delay: i * 0.9,
+              });
+            });
+            gsap.utils.toArray<HTMLElement>(".float-ruler").forEach((el, i) => {
+              gsap.to(el, {
+                y: `random(-10, 10)`, x: `random(-12, 12)`, rotation: `random(-4, 4)`,
+                duration: `random(6, 10)`, repeat: -1, yoyo: true, ease: "sine.inOut",
+                delay: i * 1.1,
+              });
             });
           }
 
@@ -203,8 +896,15 @@ export function RoamoSite() {
       <Header />
 
       <header className="hero" id="home">
+        {/* Background layers */}
+        <div className="hero-bg-texture" aria-hidden />
+        <GoldParticles />
+        <FloatingStationery />
         <div className="hero-glow" aria-hidden />
+        <div className="hero-glow hero-glow2" aria-hidden />
+
         <div className="wrap hero-grid">
+          {/* Left: Content */}
           <div className="hero-copy">
             <div className="eyebrow">A sharper stationery story</div>
             <h1>
@@ -216,10 +916,22 @@ export function RoamoSite() {
               distribution networks.
             </p>
             <div className="hero-actions">
-              <motion.a className="btn gold cta" href="#roamo" {...tap}>
+              <motion.a
+                className="btn gold cta"
+                href="https://roamopencils.com/#roamo"
+                target="_blank"
+                rel="noopener noreferrer"
+                {...tap}
+              >
                 Explore products <span>↗</span>
               </motion.a>
-              <motion.a className="btn dark cta" href="#partner" {...tap}>
+              <motion.a
+                className="btn dark cta"
+                href="https://roamopencils.com/#partner"
+                target="_blank"
+                rel="noopener noreferrer"
+                {...tap}
+              >
                 Become a business partner
               </motion.a>
             </div>
@@ -228,31 +940,108 @@ export function RoamoSite() {
               <span>Retail &amp; bulk enquiries</span>
             </div>
           </div>
+
+          {/* Right: Product Slider */}
           <div className="hero-art-inner">
-            <div className="hero-art">
-              <i className="ring" aria-hidden />
-              <i className="ring sm" aria-hidden />
-              <img id="heroProduct" src={blaxo} alt="ROAMO BLAXO pencil packaging" width={1024} height={1024} />
-              <div className="art-tag">
-                <b>ROAMO Pencils</b>
-                <span>BLUZO · BLAXO · More to come</span>
-              </div>
-            </div>
+            <HeroSlider />
           </div>
         </div>
+
         <a className="scroll-cue" href="#roamo" aria-label="Scroll to products">
           Scroll <i />
         </a>
       </header>
 
-      <div className="intro-strip">
-        <div className="wrap stripin">
-          <div className="stripitem"><strong>ROAMO</strong><span>Distinctive pencil collections</span></div>
-          <div className="stripitem"><strong>Imperium</strong><span>Wood-Free pencil range</span></div>
-          <div className="stripitem"><strong>Colour &amp; form</strong><span>Erasers and stationery essentials</span></div>
-          <div className="stripitem"><strong>Partner network</strong><span>Retail, distribution and bulk supply</span></div>
+      <div className="stats-bar">
+        <div className="wrap stats-inner">
+          <div className="stat-item">
+            <span className="stat-num">3</span>
+            <span className="stat-label">Collections</span>
+          </div>
+          <div className="stat-divider" aria-hidden />
+          <div className="stat-item">
+            <span className="stat-num">15+</span>
+            <span className="stat-label">Premium Grades</span>
+          </div>
+          <div className="stat-divider" aria-hidden />
+          <div className="stat-item">
+            <span className="stat-num">100%</span>
+            <span className="stat-label">Quality Assured</span>
+          </div>
         </div>
       </div>
+
+
+      <StackedCarousel />
+
+
+      {/* ── About Us ── */}
+      <section className="about-section" id="about">
+        <div className="wrap about-grid">
+          {/* Left: Content */}
+          <div className="about-copy">
+            <div className="section-kicker">Our story</div>
+            <h2 className="about-heading">
+              Crafting <span className="goldtext">a better</span>
+              <br />stationery story.
+            </h2>
+            <div className="about-rule" aria-hidden />
+            <p className="about-lead">
+              ROAMO was built on a simple belief — everyday stationery deserves exceptional design. From bold pencil ranges to colourful erasers, we create products that stand out on shelves and stay true to what students, creators and businesses actually need.
+            </p>
+            <p className="about-body">
+              Based in Lucknow, India, our team works closely with retailers, distributors and bulk buyers across the country. Every ROAMO product is designed with a clear identity, consistent quality and a commitment to making the stationery market a more exciting place.
+            </p>
+            <div className="about-pillars">
+              <div className="about-pillar">
+                <span className="about-pillar-icon">✦</span>
+                <div>
+                  <strong>Design-led</strong>
+                  <span>Every product built around a clear visual identity.</span>
+                </div>
+              </div>
+              <div className="about-pillar">
+                <span className="about-pillar-icon">✦</span>
+                <div>
+                  <strong>Trade-focused</strong>
+                  <span>Built for retailers, distributors and bulk buyers.</span>
+                </div>
+              </div>
+              <div className="about-pillar">
+                <span className="about-pillar-icon">✦</span>
+                <div>
+                  <strong>Quality-assured</strong>
+                  <span>Consistent performance across every range and SKU.</span>
+                </div>
+              </div>
+            </div>
+            <motion.a
+              className="btn gold about-cta"
+              href={wa("Hello ROAMO, I would like to know more about your brand and story.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              {...tap}
+            >
+              Get in touch <span>↗</span>
+            </motion.a>
+          </div>
+
+          {/* Right: Logo visual */}
+          <div className="about-visual">
+            <div className="about-logo-frame">
+              <div className="about-logo-glow" aria-hidden />
+              <img
+                src={LOGO_URL}
+                alt="ROAMO — Write Bolder, Go Further"
+                width={520}
+                height={200}
+                className="about-logo-img"
+              />
+              <div className="about-logo-tagline">Write Bolder. Go Further.</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <main>
         <section className="section" id="roamo">
@@ -299,8 +1088,8 @@ export function RoamoSite() {
               <div className="section-kicker">02 / Imperium Pencils</div>
               <h2>Rethink the everyday pencil.</h2>
               <p>
-                Discover the Imperium Wood-Free Pencil range. Product details and photographs can be updated as the
-                range expands.
+                The Imperium Wood-Free Pencil range is built for consistent, smooth writing — engineered without wood
+                for a uniform feel from tip to end. Ideal for students, professionals and bulk buyers.
               </p>
               <div className="feature-list">
                 <div className="feature">Wood-Free range</div>
@@ -308,12 +1097,18 @@ export function RoamoSite() {
                 <div className="feature">Retail enquiries</div>
                 <div className="feature">Future SKUs</div>
               </div>
-              <motion.a className="btn gold cta" href={wa(productMsg("Imperium Wood-Free pencils"))} target="_blank" rel="noopener" {...tap}>
+              <motion.a
+                className="imperium-cta"
+                href={wa(productMsg("Imperium Wood-Free pencils"))}
+                target="_blank"
+                rel="noopener"
+                {...tap}
+              >
                 Ask about Imperium <span>↗</span>
               </motion.a>
             </div>
             <div className="imperium-art">
-              <img src={bluzo} alt="Pencil product visual" width={1024} height={1024} loading="lazy" />
+              <img src={imgImperium} alt="Imperium Wood-Free pencil range" width={1200} height={1200} loading="lazy" />
             </div>
           </div>
         </section>
@@ -379,16 +1174,176 @@ export function RoamoSite() {
         </section>
       </main>
 
+      <EnquiryForm />
+
       <footer className="footer">
-        <div className="wrap footerin">
-          <a className="footbrand" href="#home">
-            <img src={logo.url} alt="ROAMO" width={118} height={42} loading="lazy" />
-          </a>
-          <div>ROAMO Pencils · Imperium Pencils · Lucknow, India</div>
-          <div className="footerlinks">
-            <a href="mailto:support@roamopencils.com">support@roamopencils.com</a>
-            <a href="tel:+918174907302">Call: 8174907302</a>
-            <a href="#partner">Business enquiries</a>
+        {/* ── Main footer grid ── */}
+        <div className="wrap footer-main">
+
+          {/* Col 1: Brand */}
+          <div className="footer-col footer-brand-col">
+            <a href="#home" className="footer-logo-link" aria-label="ROAMO home">
+              <img src="/roamo-logo.png" alt="ROAMO Pencils" width={180} height={64} loading="lazy" style={{ width: 180, height: "auto" }} />
+            </a>
+            <div className="footer-gold-line" aria-hidden />
+            <p className="footer-tagline">
+              Thoughtfully designed pencils for a brighter, more creative tomorrow.
+            </p>
+            <div className="footer-socials">
+              {/* Instagram */}
+              <a href={wa("Hello ROAMO, I found you on Instagram!")} target="_blank" rel="noopener" aria-label="Instagram" className="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+              {/* Facebook */}
+              <a href={wa("Hello ROAMO, I found you on Facebook!")} target="_blank" rel="noopener" aria-label="Facebook" className="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+              {/* LinkedIn */}
+              <a href={wa("Hello ROAMO, I found you on LinkedIn!")} target="_blank" rel="noopener" aria-label="LinkedIn" className="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </a>
+              {/* YouTube */}
+              <a href={wa("Hello ROAMO, I found you on YouTube!")} target="_blank" rel="noopener" aria-label="YouTube" className="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+                  <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-divider" aria-hidden />
+
+          {/* Col 2: Quick Links */}
+          <div className="footer-col">
+            <h4 className="footer-col-heading">Quick Links</h4>
+            <ul className="footer-links-list">
+              <li>
+                <a href="#home" className="footer-link">
+                  <span>Home</span>
+                  <svg viewBox="0 0 16 16" fill="none" width="12" height="12">
+                    <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="footer-link">
+                  <span>About Us</span>
+                  <svg viewBox="0 0 16 16" fill="none" width="12" height="12">
+                    <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href={wa(DEFAULT_MSG)} target="_blank" rel="noopener" className="footer-link">
+                  <span>Contact Us</span>
+                  <svg viewBox="0 0 16 16" fill="none" width="12" height="12">
+                    <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-divider" aria-hidden />
+
+          {/* Col 3: Collections */}
+          <div className="footer-col">
+            <h4 className="footer-col-heading">Our Collections</h4>
+            <ul className="footer-links-list footer-collections-list">
+              {[
+                { name: "ROAMO", msg: productMsg("ROAMO pencils") },
+                { name: "Imperium", msg: productMsg("Imperium Wood-Free pencils") },
+                { name: "Colour & Form", msg: productMsg("ROAMO erasers and stationery") },
+                { name: "Partner Network", msg: DEFAULT_MSG },
+              ].map(({ name, msg }) => (
+                <li key={name}>
+                  <a href={wa(msg)} target="_blank" rel="noopener" className="footer-link footer-collection-link">
+                    <span className="footer-collection-name">{name}</span>
+                    <svg viewBox="0 0 16 16" fill="none" width="12" height="12" className="footer-link-arrow">
+                      <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="footer-divider" aria-hidden />
+
+          {/* Col 4: Contact */}
+          <div className="footer-col">
+            <h4 className="footer-col-heading">Contact Us</h4>
+            <ul className="footer-contact-list">
+              <li>
+                <a href="mailto:support@roamopencils.com" className="footer-contact-item">
+                  <span className="contact-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                  </span>
+                  support@roamopencils.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+918174907302" className="footer-contact-item">
+                  <span className="contact-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                  </span>
+                  Call: 8174907302
+                </a>
+              </li>
+              <li>
+                <a href={wa(DEFAULT_MSG)} target="_blank" rel="noopener" className="footer-contact-item footer-enquiry-link">
+                  <span className="contact-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <rect x="2" y="7" width="20" height="14" rx="2"/>
+                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                    </svg>
+                  </span>
+                  Business Enquiries
+                  <svg viewBox="0 0 16 16" fill="none" width="11" height="11" style={{ marginLeft: 4 }}>
+                    <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* ── Bottom bar ── */}
+        <div className="footer-bottom">
+          <div className="wrap footer-bottom-inner">
+            <span className="footer-copy">© 2024 ROAMO Pencils · Imperium Pencils · Lucknow, India</span>
+            <div className="footer-bottom-links">
+              <a href={wa("Hello ROAMO, I would like to know about your Privacy Policy.")} target="_blank" rel="noopener">Privacy Policy</a>
+              <span className="footer-bottom-sep" aria-hidden>|</span>
+              <a href={wa("Hello ROAMO, I would like to know about your Terms & Conditions.")} target="_blank" rel="noopener">Terms &amp; Conditions</a>
+              <button
+                className="footer-backtop"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                aria-label="Back to top"
+              >
+                <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                  <path d="M8 12V4M4 8l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Back to Top
+              </button>
+            </div>
           </div>
         </div>
       </footer>
