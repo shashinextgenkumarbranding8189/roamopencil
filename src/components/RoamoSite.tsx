@@ -28,18 +28,10 @@ function Header() {
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    const sentinel = document.getElementById("home");
-    if (!sentinel) return;
-    const io = new IntersectionObserver(
-      ([e]) => setScrolled(e.boundingClientRect.top < -40),
-      { threshold: [0, 0.9, 1] },
-    );
-    io.observe(sentinel);
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      io.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
@@ -115,7 +107,7 @@ export function RoamoSite() {
           mobile: "(max-width: 800px) and (prefers-reduced-motion: no-preference)",
         },
         (c) => {
-          const desktop = !!c.conditions?.desktop;
+          const desktop = !!c.conditions?.["desktop"];
           const ease = "power3.out";
 
           // HERO timeline
