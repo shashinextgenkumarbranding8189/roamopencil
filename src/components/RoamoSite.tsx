@@ -8,6 +8,23 @@ import imgRoamo from "@/assets/ROAMO.webp";
 import imgImperium from "@/assets/Imperium.webp";
 import imgColour from "@/assets/Colour & Form.webp";
 import imgPartner from "@/assets/Partner Network.webp";
+import prodEraserSharp from "@/assets/roamoproduct/ERASERSHARP.jpeg";
+import prodNoDust from "@/assets/roamoproduct/NODUST REASER.jpeg";
+import prodRoamo from "@/assets/roamoproduct/ROAMO.jpeg";
+import prodTriangular from "@/assets/roamoproduct/Triangularpencil.jpeg";
+import impColors from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORS.jpeg";
+import impDoubleBox from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-DOUBLE-BOX.jpeg";
+import impPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL.jpeg";
+import impWoodPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCIL.jpeg";
+import impExtra from "@/assets/roamoproduct/IMPERIUM/IMPERIUMPENCILIMAGE.jpeg";
+import blaxoPencil from "@/assets/roamoproduct/BLAXO/BLAXO-PENCIL.jpeg";
+import blaxo10 from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCIL.jpeg";
+import bluzoPencil from "@/assets/roamoproduct/BLUZO/BLUZO-PENCIL.jpeg";
+import bluzoPack from "@/assets/roamoproduct/BLUZO/BLUZO-PACK.jpeg";
+import rpNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASER.jpeg";
+import rpEraser from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASER.jpeg";
+import rpEraserSharp from "@/assets/roamoproduct/Roamo products/RP-ERASER-SHARP.jpeg";
+import rpTriangular from "@/assets/roamoproduct/Roamo products/RP-TRIANGULAR-PENCIL.jpeg";
 
 // Logo served from public folder (works in both local dev and production)
 const LOGO_URL = "/roamo-logo.png";
@@ -141,25 +158,24 @@ function FloatingStationery() {
 // ── Hero Product Slider ───────────────────────────────────────────────────────
 const SLIDES = [
   {
-    img: blaxo,
-    name: "BLAXO",
-    tag: "Black Series",
-    desc: "Bold, premium pencil range with a distinctive black-and-gold visual identity.",
-    href: "https://roamopencils.com/#roamo",
+    img: prodRoamo,
+    name: "ROAMO Pencils",
+    tag: "Signature Range",
   },
   {
-    img: bluzo,
-    name: "BLUZO",
-    tag: "Blue Series",
-    desc: "Fresh blue-accented pencil range designed to stand apart on the stationery shelf.",
-    href: "https://roamopencils.com/#roamo",
+    img: prodTriangular,
+    name: "Triangular Pencil",
+    tag: "Premium Grade",
   },
   {
-    img: blaxo,
-    name: "Imperium",
-    tag: "Wood-Free Range",
-    desc: "Rethink the everyday pencil with our innovative wood-free Imperium range.",
-    href: "https://roamopencils.com/#roamo",
+    img: prodEraserSharp,
+    name: "Eraser Sharp",
+    tag: "Colour & Form",
+  },
+  {
+    img: prodNoDust,
+    name: "No-Dust Eraser",
+    tag: "Colour & Form",
   },
 ];
 
@@ -221,11 +237,7 @@ function HeroSlider() {
             className="slider-slide"
           >
             <div className="slider-img-wrap">
-              <img src={slide.img} alt={`ROAMO ${slide.name} pencil packaging`} width={900} height={900} />
-            </div>
-            <div className="slider-info">
-              <span className="slider-tag">{slide.tag}</span>
-              <strong className="slider-name">{slide.name}</strong>
+              <img src={slide.img} alt={`ROAMO product`} width={900} height={900} />
             </div>
           </motion.div>
         </AnimatePresence>
@@ -682,6 +694,55 @@ function EnquiryForm() {
   );
 }
 
+// ── Imperium Collection Grid ─────────────────────────────────────────────────
+const IMPERIUM_PRODUCTS = [
+  { img: impPencil,    name: "Imperium Pencil",      desc: "Smooth, consistent writing in a sleek wood-free design." },
+  { img: impColors,    name: "Imperium Colour Range", desc: "Vibrant colour grades for students and creatives." },
+  { img: impDoubleBox, name: "Imperium Double Box",   desc: "Retail-ready double-pack presentation for the shelf." },
+  { img: impWoodPencil,name: "Imperium Wood Pencil",  desc: "Classic wood-barrel variant with the Imperium identity." },
+];
+
+function ImperiumCollection() {
+  return (
+    <section className="imp-collection-section">
+      <div className="wrap">
+        <div className="imp-collection-head">
+          <div className="section-kicker">Imperium Range</div>
+          <h2>Explore the Imperium Collection.</h2>
+        </div>
+        <div className="imp-grid">
+          {IMPERIUM_PRODUCTS.map((p, i) => (
+            <motion.article
+              key={p.name}
+              className="imp-card"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
+              whileHover={{ y: -6 }}
+            >
+              <div className="imp-card-img">
+                <img src={p.img} alt={p.name} loading="lazy" width={800} height={800} />
+              </div>
+              <div className="imp-card-body">
+                <a
+                  className="imp-card-cta"
+                  href={wa(`Hello ROAMO, I am interested in the ${p.name}.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Enquire on WhatsApp <span>↗</span>
+                </a>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 const NAV = [
   { href: "#roamo", label: "ROAMO Pencils" },
   { href: "#imperium", label: "Imperium" },
@@ -972,64 +1033,119 @@ export function RoamoSite() {
       </div>
 
 
-      <StackedCarousel />
-
-
       {/* ── About Us ── */}
       <section className="about-section" id="about">
         <div className="wrap about-grid">
+
           {/* Left: Content */}
-          <div className="about-copy">
-            <div className="section-kicker">Our story</div>
+          <motion.div
+            className="about-copy"
+            initial={{ opacity: 0, x: -28 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="about-eyebrow">
+              <span className="about-eyebrow-line" aria-hidden />
+              Our Story
+            </div>
+
             <h2 className="about-heading">
-              Crafting <span className="goldtext">a better</span>
-              <br />stationery story.
+              Crafting <span className="goldtext">a better</span><br />
+              stationery story.
             </h2>
+
             <div className="about-rule" aria-hidden />
+
             <p className="about-lead">
-              ROAMO was built on a simple belief — everyday stationery deserves exceptional design. From bold pencil ranges to colourful erasers, we create products that stand out on shelves and stay true to what students, creators and businesses actually need.
+              ROAMO was built on a simple belief. Everyday stationery deserves exceptional design. From bold pencil ranges to colourful erasers, we create products that stand out on shelves and stay true to what students, creators and businesses actually need.
             </p>
             <p className="about-body">
               Based in Lucknow, India, our team works closely with retailers, distributors and bulk buyers across the country. Every ROAMO product is designed with a clear identity, consistent quality and a commitment to making the stationery market a more exciting place.
             </p>
+
             <div className="about-pillars">
-              <div className="about-pillar">
-                <span className="about-pillar-icon">✦</span>
-                <div>
-                  <strong>Design-led</strong>
-                  <span>Every product built around a clear visual identity.</span>
-                </div>
-              </div>
-              <div className="about-pillar">
-                <span className="about-pillar-icon">✦</span>
-                <div>
-                  <strong>Trade-focused</strong>
-                  <span>Built for retailers, distributors and bulk buyers.</span>
-                </div>
-              </div>
-              <div className="about-pillar">
-                <span className="about-pillar-icon">✦</span>
-                <div>
-                  <strong>Quality-assured</strong>
-                  <span>Consistent performance across every range and SKU.</span>
-                </div>
-              </div>
+              {[
+                {
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.91 18L10 15.27L5.09 18L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#d8b15a" strokeWidth="1.4" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  label: "Design Led",
+                  desc: "Every product built around a clear visual identity.",
+                },
+                {
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                      <path d="M3 10h14M10 3v14" stroke="#d8b15a" strokeWidth="1.6" strokeLinecap="round"/>
+                      <circle cx="10" cy="10" r="8" stroke="#d8b15a" strokeWidth="1.4"/>
+                    </svg>
+                  ),
+                  label: "Trade Focused",
+                  desc: "Built for retailers, distributors and bulk buyers.",
+                },
+                {
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                      <path d="M4 10l4.5 4.5L16 6" stroke="#d8b15a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="10" cy="10" r="8" stroke="#d8b15a" strokeWidth="1.4"/>
+                    </svg>
+                  ),
+                  label: "Quality Assured",
+                  desc: "Consistent performance across every range and SKU.",
+                },
+              ].map((p, i) => (
+                <motion.div
+                  key={p.label}
+                  className="about-pillar"
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 + i * 0.1 }}
+                >
+                  <span className="about-pillar-icon" aria-hidden>{p.icon}</span>
+                  <div>
+                    <strong>{p.label}</strong>
+                    <span>{p.desc}</span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
+
             <motion.a
-              className="btn gold about-cta"
+              className="about-cta-btn"
               href={wa("Hello ROAMO, I would like to know more about your brand and story.")}
               target="_blank"
               rel="noopener noreferrer"
-              {...tap}
+              whileHover={{ y: -3, boxShadow: "0 14px 36px #d8b15a55" }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              Get in touch <span>↗</span>
+              Get in touch
+              <span className="about-cta-arrow">↗</span>
             </motion.a>
-          </div>
+          </motion.div>
 
-          {/* Right: Logo visual */}
-          <div className="about-visual">
+          {/* Right: Logo panel */}
+          <motion.div
+            className="about-visual"
+            initial={{ opacity: 0, x: 28 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          >
             <div className="about-logo-frame">
-              <div className="about-logo-glow" aria-hidden />
+              {/* Layered glows */}
+              <div className="about-logo-glow about-logo-glow--outer" aria-hidden />
+              <div className="about-logo-glow about-logo-glow--inner" aria-hidden />
+
+              {/* Corner accents */}
+              <span className="about-corner about-corner--tl" aria-hidden />
+              <span className="about-corner about-corner--tr" aria-hidden />
+              <span className="about-corner about-corner--bl" aria-hidden />
+              <span className="about-corner about-corner--br" aria-hidden />
+
               <img
                 src={LOGO_URL}
                 alt="ROAMO — Write Bolder, Go Further"
@@ -1038,8 +1154,16 @@ export function RoamoSite() {
                 className="about-logo-img"
               />
               <div className="about-logo-tagline">Write Bolder. Go Further.</div>
+
+              {/* Bottom brand strip */}
+              <div className="about-logo-strip" aria-hidden>
+                <span />
+                <span>Est. Lucknow, India</span>
+                <span />
+              </div>
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </section>
 
@@ -1049,22 +1173,22 @@ export function RoamoSite() {
             <div className="section-head">
               <div>
                 <div className="section-kicker">01 / The signature range</div>
-                <h2>Meet the ROAMO pencils.</h2>
+                <h2>Meet the ROAMO Products.</h2>
               </div>
               <p>
-                Explore the BLAXO and BLUZO ranges, built around memorable packaging and a clear product identity.
+                Explore the BLAXO, BLUZO ranges and More Products, built around memorable packaging and a clear product identity.
                 Contact us for current availability and trade enquiries.
               </p>
             </div>
             <div className="rule" />
             <div className="products">
               {[
-                { name: "BLAXO", pill: "Black series", img: blaxo, alt: "ROAMO BLAXO pencil pack", text: "A bold, premium-looking pencil range with a distinctive black-and-gold visual identity." },
-                { name: "BLUZO", pill: "Blue series", img: bluzo, alt: "ROAMO BLUZO pencil packaging", text: "A fresh blue-accented pencil range designed to stand apart on the stationery shelf." },
+                { name: "BLAXO", pill: "Black series", img: blaxoPencil, alt: "ROAMO BLAXO pencil", text: "A bold, premium-looking pencil range with a distinctive black-and-gold visual identity." },
+                { name: "BLUZO", pill: "Blue series", img: bluzoPack, alt: "ROAMO BLUZO pencil", text: "A fresh blue-accented pencil range designed to stand apart on the stationery shelf." },
               ].map((p) => (
                 <motion.article key={p.name} className="product" whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 260, damping: 24 }}>
                   <div className="product-img">
-                    <img src={p.img} alt={p.alt} width={1024} height={1024} loading="lazy" />
+                    <img src={p.img} alt={p.alt} width={800} height={800} loading="lazy" />
                   </div>
                   <div className="product-body">
                     <div className="product-top">
@@ -1078,6 +1202,71 @@ export function RoamoSite() {
                   </div>
                 </motion.article>
               ))}
+
+              {/* Col 3 — Additional Products 2×2 grid */}
+              <motion.article
+                className="product product--additional"
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 260, damping: 24 }}
+              >
+                <div className="product-img product-img--grid">
+                  {[rpNoDust, rpEraser, rpEraserSharp, rpTriangular].map((img, i) => (
+                    <div key={i} className="product-img-cell">
+                      <img src={img} alt="ROAMO additional product" width={400} height={400} loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+                <div className="product-body">
+                  <div className="product-top">
+                    <h3>More Products</h3>
+                    <span className="pill">Stationery</span>
+                  </div>
+                  <p>Erasers, triangular pencils and everyday stationery essentials from the ROAMO range.</p>
+                  <a className="textlink" href={wa("Hello ROAMO, I am interested in your additional stationery products.")} target="_blank" rel="noopener">
+                    Enquire about range <span>→</span>
+                  </a>
+                </div>
+              </motion.article>
+            </div>
+          </div>
+        </section>
+
+        <section className="section erasers" id="erasers">
+          <div className="wrap">
+            <div className="section-head">
+              <div>
+                <div className="section-kicker">02 / More stationery</div>
+                <h2>
+                  Small essentials.
+                  <br />
+                  <span className="goldtext">Big personality.</span>
+                </h2>
+              </div>
+              <p>
+                Colourful erasers and upcoming stationery products will have their own space, with room for pack shots,
+                close-ups and new collections.
+              </p>
+            </div>
+            <div className="eraser-grid">
+              {[
+                { img: rpNoDust,     alt: "ROAMO No-Dust Eraser",    wa: "No-Dust Eraser" },
+                { img: rpEraser,     alt: "ROAMO Eraser",             wa: "ROAMO Eraser" },
+                { img: rpEraserSharp,alt: "ROAMO Eraser Sharp",       wa: "ROAMO Eraser Sharp" },
+                { img: rpTriangular, alt: "ROAMO Triangular Pencil",  wa: "ROAMO Triangular Pencil" },
+              ].map((p, i) => (
+                <a
+                  key={p.alt}
+                  className="eraser-tile eraser-tile--img"
+                  href={wa(`Hello ROAMO, I am interested in the ${p.wa}.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="eraser-tile-img">
+                    <img src={p.img} alt={p.alt} loading="lazy" width={800} height={800} />
+                  </div>
+                  <span className="eraser-tile-cta">Enquire ↗</span>
+                </a>
+              ))}
             </div>
           </div>
         </section>
@@ -1085,7 +1274,7 @@ export function RoamoSite() {
         <section className="section imperium" id="imperium">
           <div className="wrap imperium-grid">
             <div className="imperium-copy">
-              <div className="section-kicker">02 / Imperium Pencils</div>
+              <div className="section-kicker">03 / Imperium Pencils</div>
               <h2>Rethink the everyday pencil.</h2>
               <p>
                 The Imperium Wood-Free Pencil range is built for consistent, smooth writing — engineered without wood
@@ -1108,49 +1297,14 @@ export function RoamoSite() {
               </motion.a>
             </div>
             <div className="imperium-art">
-              <img src={imgImperium} alt="Imperium Wood-Free pencil range" width={1200} height={1200} loading="lazy" />
+              <img src={impExtra} alt="Imperium Wood-Free pencil range" width={1200} height={1200} loading="lazy" />
             </div>
           </div>
         </section>
 
-        <section className="section erasers" id="erasers">
-          <div className="wrap">
-            <div className="section-head">
-              <div>
-                <div className="section-kicker">03 / More stationery</div>
-                <h2>
-                  Small essentials.
-                  <br />
-                  <span className="goldtext">Big personality.</span>
-                </h2>
-              </div>
-              <p>
-                Colourful erasers and upcoming stationery products will have their own space, with room for pack shots,
-                close-ups and new collections.
-              </p>
-            </div>
-            <div className="eraser-grid">
-              <div className="eraser-tile">
-                <div>
-                  <div className="section-kicker">ROAMO Erasers</div>
-                  <h3>Colour your stationery shelf.</h3>
-                  <p>Explore colourful, triangular, neon and other eraser styles as product photography becomes available.</p>
-                </div>
-                <div className="num">01 — 03</div>
-              </div>
-              <div className="eraser-tile">
-                <div>
-                  <div className="section-kicker">Future collections</div>
-                  <h3>More products, one clear identity.</h3>
-                  <p>Designed to make space for new SKUs without rebuilding the website layout each time.</p>
-                </div>
-                <a className="textlink" href={wa("Hello ROAMO, I would like to discuss bulk requirements.")} target="_blank" rel="noopener">
-                  Discuss bulk requirements <span>→</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ImperiumCollection />
+
+        <StackedCarousel />
 
         <section className="partner" id="partner">
           <div className="wrap">
