@@ -9,7 +9,16 @@ export const Route = createFileRoute("/privacy-policy")({
         content:
           "Read the ROAMO Pencils Privacy Policy. Learn how we collect, use and protect your information when you visit our website or contact us for trade enquiries.",
       },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Privacy Policy — ROAMO Pencils" },
+      { property: "og:description", content: "Read the ROAMO Pencils Privacy Policy." },
+      { property: "og:url", content: "https://roamopencils.com/privacy-policy" },
+      { property: "og:image", content: "https://roamopencils.com/roamo-logo.png" },
+      { name: "twitter:title", content: "Privacy Policy — ROAMO Pencils" },
+      { name: "twitter:description", content: "Read the ROAMO Pencils Privacy Policy." },
+      { name: "twitter:image", content: "https://roamopencils.com/roamo-logo.png" },
     ],
+    links: [{ rel: "canonical", href: "https://roamopencils.com/privacy-policy" }],
   }),
   component: PrivacyPolicy,
 });

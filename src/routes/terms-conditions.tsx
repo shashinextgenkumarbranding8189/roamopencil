@@ -9,7 +9,16 @@ export const Route = createFileRoute("/terms-conditions")({
         content:
           "Read the ROAMO Pencils Terms and Conditions. Understand the rules governing use of our website and trade enquiry services.",
       },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Terms & Conditions — ROAMO Pencils" },
+      { property: "og:description", content: "Read the ROAMO Pencils Terms and Conditions." },
+      { property: "og:url", content: "https://roamopencils.com/terms-conditions" },
+      { property: "og:image", content: "https://roamopencils.com/roamo-logo.png" },
+      { name: "twitter:title", content: "Terms & Conditions — ROAMO Pencils" },
+      { name: "twitter:description", content: "Read the ROAMO Pencils Terms and Conditions." },
+      { name: "twitter:image", content: "https://roamopencils.com/roamo-logo.png" },
     ],
+    links: [{ rel: "canonical", href: "https://roamopencils.com/terms-conditions" }],
   }),
   component: TermsConditions,
 });

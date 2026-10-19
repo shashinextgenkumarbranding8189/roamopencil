@@ -10,18 +10,12 @@ import imgRoamo from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCILs.webp";
 import imgImperium from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORSs.webp";
 import imgColour from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASERs.webp";
 import imgPartner from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCILs.webp";
-import prodEraserSharp from "@/assets/roamoproduct/Roamo products/RP-ERASER-SHARPs.webp";
-import prodNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASERs.webp";
-import prodRoamo from "@/assets/roamoproduct/ROAMO.jpeg";
-import prodTriangular from "@/assets/roamoproduct/Roamo products/RP-TRIANGULAR-PENCILs.webp";
 import impColors from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORSs.webp";
 import impDoubleBox from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-DOUBLE-BOXs.webp";
 import impPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCILs.webp";
 import impWoodPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCILs.webp";
 import impExtra from "@/assets/roamoproduct/IMPERIUM/IMPERIUMPENCILIMAGE.jpeg";
 import blaxoPencil from "@/assets/roamoproduct/BLAXO/BLAXO-PENCILs.webp";
-import blaxo10 from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCILs.webp";
-import bluzoPencil from "@/assets/roamoproduct/BLUZO/BLUZO-PENCILs.webp";
 import bluzoPack from "@/assets/roamoproduct/BLUZO/BLUZO-PACKs.webp";
 import rpNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASERs.webp";
 import rpEraser from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASERs.webp";
@@ -1268,7 +1262,7 @@ export function RoamoSite() {
                   products, availability and business enquiries.
                 </p>
                 <p className="contact-number">
-                  Business enquiries: <a href="tel:+918355015584">8355015584</a>
+                  Business enquiries: <a href="tel:+918174907302">+91 8174907302</a>
                 </p>
               </div>
               <motion.a className="btn gold cta" id="whatsappLink" href={wa(DEFAULT_MSG)} target="_blank" rel="noopener" {...tap}>
@@ -1278,6 +1272,91 @@ export function RoamoSite() {
           </div>
         </section>
       </main>
+
+      {/* ── Distributor Enquiry ── */}
+      <section className="dist-section" id="distributor">
+        <div className="dist-bg-glow" aria-hidden />
+        <div className="wrap dist-wrap">
+
+          {/* Left: content */}
+          <motion.div
+            className="dist-copy"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="dist-eyebrow">
+              <span className="dist-eyebrow-line" aria-hidden />
+              Partner with ROAMO
+            </div>
+            <h2 className="dist-heading">
+              Become a ROAMO<br />
+              <span className="goldtext">Distributor.</span>
+            </h2>
+            <p className="dist-lead">
+              We are looking for passionate wholesalers, retailers, stationery shops and distribution partners across India. Join the ROAMO network and bring premium stationery to your market.
+            </p>
+
+            <div className="dist-features">
+              {[
+                { icon: "◈", text: "Wholesale pricing for bulk orders" },
+                { icon: "◈", text: "Dedicated support from our trade team" },
+                { icon: "◈", text: "Full BLAXO, BLUZO and Imperium range" },
+                { icon: "◈", text: "Flexible minimum order quantities" },
+              ].map((f) => (
+                <div key={f.text} className="dist-feature">
+                  <span className="dist-feature-icon" aria-hidden>{f.icon}</span>
+                  <span>{f.text}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: CTA card */}
+          <motion.div
+            className="dist-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+          >
+            <div className="dist-card-inner">
+              <div className="dist-card-logo">
+                <img src={LOGO_URL} alt="ROAMO" width={140} height={52} />
+              </div>
+
+              <div className="dist-card-divider" aria-hidden />
+
+              <p className="dist-card-tagline">
+                Ready to stock ROAMO products? Get in touch with our trade team today.
+              </p>
+
+              <div className="dist-card-actions">
+                <motion.a
+                  className="dist-btn dist-btn--primary"
+                  href={`https://wa.me/918174907302?text=${encodeURIComponent("Hello ROAMO, I am interested in becoming a distributor or retail partner.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ y: -3, boxShadow: "0 14px 36px #d8b15a55" }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden>
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Enquire on WhatsApp
+                </motion.a>
+              </div>
+
+              <p className="dist-card-note">
+                Our trade team responds within one business day.
+              </p>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
 
       <EnquiryForm />
 
@@ -1402,13 +1481,13 @@ export function RoamoSite() {
                 </a>
               </li>
               <li>
-                <a href="tel:+918355015584" className="footer-contact-item">
+                <a href={wa("Hello ROAMO, I would like to enquire about your products.")} target="_blank" rel="noopener" className="footer-contact-item">
                   <span className="contact-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                     </svg>
                   </span>
-                  Call: 8355015584
+                  WhatsApp: 8355015584
                 </a>
               </li>
               <li>
