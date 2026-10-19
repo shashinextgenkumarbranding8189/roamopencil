@@ -2,34 +2,36 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import blaxo from "@/assets/blaxo.jpg";
-import bluzo from "@/assets/bluzo.jpg";
-import imgRoamo from "@/assets/ROAMO.webp";
-import imgImperium from "@/assets/Imperium.webp";
-import imgColour from "@/assets/Colour & Form.webp";
-import imgPartner from "@/assets/Partner Network.webp";
-import prodEraserSharp from "@/assets/roamoproduct/ERASERSHARP.jpeg";
-import prodNoDust from "@/assets/roamoproduct/NODUST REASER.jpeg";
+import heroBlaxo from "@/assets/roamoproduct/hero section/BLAXO-PENCILs.webp";
+import heroBluzo from "@/assets/roamoproduct/hero section/BLUZO-PACKs.webp";
+import heroImperiumBox from "@/assets/roamoproduct/hero section/IMPERIUM-PENCIL-DOUBLE-BOXs.webp";
+import heroImperium from "@/assets/roamoproduct/hero section/IMPERIUM-PENCILs.webp";
+import imgRoamo from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCILs.webp";
+import imgImperium from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORSs.webp";
+import imgColour from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASERs.webp";
+import imgPartner from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCILs.webp";
+import prodEraserSharp from "@/assets/roamoproduct/Roamo products/RP-ERASER-SHARPs.webp";
+import prodNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASERs.webp";
 import prodRoamo from "@/assets/roamoproduct/ROAMO.jpeg";
-import prodTriangular from "@/assets/roamoproduct/Triangularpencil.jpeg";
-import impColors from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORS.jpeg";
-import impDoubleBox from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-DOUBLE-BOX.jpeg";
-import impPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL.jpeg";
-import impWoodPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCIL.jpeg";
+import prodTriangular from "@/assets/roamoproduct/Roamo products/RP-TRIANGULAR-PENCILs.webp";
+import impColors from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-COLORSs.webp";
+import impDoubleBox from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCIL-DOUBLE-BOXs.webp";
+import impPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-PENCILs.webp";
+import impWoodPencil from "@/assets/roamoproduct/IMPERIUM/IMPERIUM-WOOD-PENCILs.webp";
 import impExtra from "@/assets/roamoproduct/IMPERIUM/IMPERIUMPENCILIMAGE.jpeg";
-import blaxoPencil from "@/assets/roamoproduct/BLAXO/BLAXO-PENCIL.jpeg";
-import blaxo10 from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCIL.jpeg";
-import bluzoPencil from "@/assets/roamoproduct/BLUZO/BLUZO-PENCIL.jpeg";
-import bluzoPack from "@/assets/roamoproduct/BLUZO/BLUZO-PACK.jpeg";
-import rpNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASER.jpeg";
-import rpEraser from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASER.jpeg";
-import rpEraserSharp from "@/assets/roamoproduct/Roamo products/RP-ERASER-SHARP.jpeg";
-import rpTriangular from "@/assets/roamoproduct/Roamo products/RP-TRIANGULAR-PENCIL.jpeg";
+import blaxoPencil from "@/assets/roamoproduct/BLAXO/BLAXO-PENCILs.webp";
+import blaxo10 from "@/assets/roamoproduct/BLAXO/BLAXO-10PENCILs.webp";
+import bluzoPencil from "@/assets/roamoproduct/BLUZO/BLUZO-PENCILs.webp";
+import bluzoPack from "@/assets/roamoproduct/BLUZO/BLUZO-PACKs.webp";
+import rpNoDust from "@/assets/roamoproduct/Roamo products/RP-NODUST-ERASERs.webp";
+import rpEraser from "@/assets/roamoproduct/Roamo products/RP-ROAMO-ERASERs.webp";
+import rpEraserSharp from "@/assets/roamoproduct/Roamo products/RP-ERASER-SHARPs.webp";
+import rpTriangular from "@/assets/roamoproduct/Roamo products/RP-TRIANGULAR-PENCILs.webp";
 
 // Logo served from public folder (works in both local dev and production)
 const LOGO_URL = "/roamo-logo.png";
 
-const WA_NUMBER = "918174907302";
+const WA_NUMBER = "918355015584";
 const wa = (msg: string) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
 const DEFAULT_MSG = "Hello ROAMO, I am interested in your stationery products.";
 const productMsg = (p: string) => `Hello ROAMO, I am interested in ${p}.`;
@@ -158,24 +160,24 @@ function FloatingStationery() {
 // ── Hero Product Slider ───────────────────────────────────────────────────────
 const SLIDES = [
   {
-    img: prodRoamo,
-    name: "ROAMO Pencils",
-    tag: "Signature Range",
+    img: heroBlaxo,
+    name: "BLAXO Pencils",
+    tag: "Black Series",
   },
   {
-    img: prodTriangular,
-    name: "Triangular Pencil",
-    tag: "Premium Grade",
+    img: heroBluzo,
+    name: "BLUZO Pencils",
+    tag: "Blue Series",
   },
   {
-    img: prodEraserSharp,
-    name: "Eraser Sharp",
-    tag: "Colour & Form",
+    img: heroImperium,
+    name: "Imperium Pencil",
+    tag: "Wood-Free Range",
   },
   {
-    img: prodNoDust,
-    name: "No-Dust Eraser",
-    tag: "Colour & Form",
+    img: heroImperiumBox,
+    name: "Imperium Double Box",
+    tag: "Retail Pack",
   },
 ];
 
@@ -268,38 +270,10 @@ function HeroSlider() {
 
 // ── 3D Stacked Carousel ──────────────────────────────────────────────────────
 const CAROUSEL_ITEMS = [
-  {
-    title: "ROAMO",
-    label: "Distinctive Pencil Collections",
-    desc: "Iconic pencil ranges built around bold packaging and a clear product identity — crafted for students, creators and retailers.",
-    img: imgRoamo,
-    enquiry: wa(productMsg("ROAMO pencils")),
-    kicker: "01 / Signature Range",
-  },
-  {
-    title: "Imperium",
-    label: "Wood-Free Pencil Range",
-    desc: "Rethink the everyday pencil. The Imperium range delivers consistent performance with a modern, wood-free design.",
-    img: imgImperium,
-    enquiry: wa(productMsg("Imperium Wood-Free pencils")),
-    kicker: "02 / Imperium",
-  },
-  {
-    title: "Colour & form",
-    label: "Erasers & Stationery Essentials",
-    desc: "Colourful erasers and stationery essentials — designed to make your shelf stand out with personality and practicality.",
-    img: imgColour,
-    enquiry: wa("Hello ROAMO, I am interested in your erasers and stationery products."),
-    kicker: "03 / More Stationery",
-  },
-  {
-    title: "Partner network",
-    label: "Retail, Distribution & Bulk Supply",
-    desc: "Are you a retailer, distributor, school or bulk buyer? Partner with ROAMO and grow the stationery market together.",
-    img: imgPartner,
-    enquiry: wa(DEFAULT_MSG),
-    kicker: "04 / Trade & Distribution",
-  },
+  { img: imgRoamo,   alt: "BLAXO Pencil",              enquiry: wa(productMsg("BLAXO pencils")) },
+  { img: imgImperium,alt: "Imperium Colour Range",      enquiry: wa(productMsg("Imperium pencils")) },
+  { img: imgColour,  alt: "ROAMO Eraser",               enquiry: wa("Hello ROAMO, I am interested in your erasers and stationery products.") },
+  { img: imgPartner, alt: "Imperium Wood Pencil",        enquiry: wa(DEFAULT_MSG) },
 ];
 
 const TOTAL = CAROUSEL_ITEMS.length;
@@ -413,33 +387,21 @@ function StackedCarousel() {
             const style = cardStyle(pos);
             const isActive = pos === 0;
             return (
-              <div
-                key={item.title}
+              <a
+                key={item.alt}
                 className={`c-card${isActive ? " c-card--active" : ""}`}
                 style={style}
-                onClick={() => !isActive && goTo(i, pos > 0 ? 1 : -1)}
+                href={isActive ? item.enquiry : undefined}
+                target={isActive ? "_blank" : undefined}
+                rel={isActive ? "noopener noreferrer" : undefined}
+                onClick={e => { if (!isActive) { e.preventDefault(); goTo(i, pos > 0 ? 1 : -1); } }}
+                aria-label={isActive ? `Enquire about ${item.alt}` : item.alt}
                 aria-hidden={!isActive}
               >
                 <div className="c-card-img">
-                  <img src={item.img} alt={item.title} loading="lazy" />
-                  <div className="c-card-img-fade" aria-hidden />
+                  <img src={item.img} alt={item.alt} loading="lazy" />
                 </div>
-                <div className="c-card-body">
-                  <span className="c-card-kicker">{item.kicker}</span>
-                  <h3 className="c-card-title">{item.title}</h3>
-                  <p className="c-card-label">{item.label}</p>
-                  <p className="c-card-desc">{item.desc}</p>
-                  <a
-                    className="c-card-cta"
-                    href={item.enquiry}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    Enquire now <span>→</span>
-                  </a>
-                </div>
-              </div>
+              </a>
             );
           })}
         </div>
@@ -464,7 +426,7 @@ function StackedCarousel() {
             key={i}
             className={`carousel-dot${i === active ? " active" : ""}`}
             onClick={() => goTo(i, i > active ? 1 : -1)}
-            aria-label={`Go to ${item.title}`}
+            aria-label={`Go to ${item.alt}`}
           />
         ))}
       </div>
@@ -723,16 +685,6 @@ function ImperiumCollection() {
             >
               <div className="imp-card-img">
                 <img src={p.img} alt={p.name} loading="lazy" width={800} height={800} />
-              </div>
-              <div className="imp-card-body">
-                <a
-                  className="imp-card-cta"
-                  href={wa(`Hello ROAMO, I am interested in the ${p.name}.`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Enquire on WhatsApp <span>↗</span>
-                </a>
               </div>
             </motion.article>
           ))}
@@ -1264,7 +1216,6 @@ export function RoamoSite() {
                   <div className="eraser-tile-img">
                     <img src={p.img} alt={p.alt} loading="lazy" width={800} height={800} />
                   </div>
-                  <span className="eraser-tile-cta">Enquire ↗</span>
                 </a>
               ))}
             </div>
@@ -1317,7 +1268,7 @@ export function RoamoSite() {
                   products, availability and business enquiries.
                 </p>
                 <p className="contact-number">
-                  Business enquiries: <a href="tel:+918174907302">8174907302</a>
+                  Business enquiries: <a href="tel:+918355015584">8355015584</a>
                 </p>
               </div>
               <motion.a className="btn gold cta" id="whatsappLink" href={wa(DEFAULT_MSG)} target="_blank" rel="noopener" {...tap}>
@@ -1451,13 +1402,13 @@ export function RoamoSite() {
                 </a>
               </li>
               <li>
-                <a href="tel:+918174907302" className="footer-contact-item">
+                <a href="tel:+918355015584" className="footer-contact-item">
                   <span className="contact-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
                   </span>
-                  Call: 8174907302
+                  Call: 8355015584
                 </a>
               </li>
               <li>
@@ -1484,9 +1435,9 @@ export function RoamoSite() {
           <div className="wrap footer-bottom-inner">
             <span className="footer-copy">© 2024 ROAMO Pencils · Imperium Pencils · Lucknow, India</span>
             <div className="footer-bottom-links">
-              <a href={wa("Hello ROAMO, I would like to know about your Privacy Policy.")} target="_blank" rel="noopener">Privacy Policy</a>
+              <a href="/privacy-policy">Privacy Policy</a>
               <span className="footer-bottom-sep" aria-hidden>|</span>
-              <a href={wa("Hello ROAMO, I would like to know about your Terms & Conditions.")} target="_blank" rel="noopener">Terms &amp; Conditions</a>
+              <a href="/terms-conditions">Terms &amp; Conditions</a>
               <button
                 className="footer-backtop"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
